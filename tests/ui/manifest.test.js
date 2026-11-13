@@ -23,7 +23,7 @@ describe('manifest.json', () => {
       expect(png.some((i) => i.sizes === tamanho && i.purpose === 'maskable'), `maskable ${tamanho}`).toBe(true);
     }
     for (const icone of [...manifest.icons, ...manifest.shortcuts.flatMap((s) => s.icons)]) {
-      expect(existsSync(resolve(publico, `.${icone.src}`)), icone.src).toBe(true);
+      expect(existsSync(resolve(publico, icone.src)), icone.src).toBe(true);
     }
   });
 
@@ -32,8 +32,8 @@ describe('manifest.json', () => {
   });
 
   it('está ligado no index.html com o ícone da Apple', () => {
-    expect(html).toContain('<link rel="manifest" href="/manifest.json" />');
-    expect(html).toContain('/icones/apple-touch-icon.png');
+    expect(html).toContain('<link rel="manifest" href="manifest.json" />');
+    expect(html).toContain("icones/apple-touch-icon.png");
     expect(html).toContain(`<meta name="theme-color" content="${manifest.theme_color}" />`);
   });
 });

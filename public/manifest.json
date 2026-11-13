@@ -1,12 +1,12 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "Oficina Lucrativa",
   "short_name": "Oficina",
   "description": "Gestão para oficinas eletrônicas e assistências técnicas. Uma solução RendaPrática.",
   "lang": "pt-BR",
   "dir": "ltr",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
@@ -14,23 +14,23 @@
   "theme_color": "#0F1E33",
   "categories": ["business", "productivity", "utilities"],
   "icons": [
-    { "src": "/icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icones/icone-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    { "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icones/icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
     {
       "name": "Início",
-      "url": "/#/inicio",
-      "icons": [{ "src": "/icones/icone-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "./#/inicio",
+      "icons": [{ "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Dados da oficina",
       "short_name": "Oficina",
-      "url": "/#/configuracoes/oficina",
-      "icons": [{ "src": "/icones/icone-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "./#/configuracoes/oficina",
+      "icons": [{ "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

@@ -26,7 +26,7 @@ export const config = {
 
 export function problemaDeConfiguracao() {
   if (!url || !chave) {
-    return 'Defina VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY no arquivo .env.local.';
+    return 'Faltam as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY. Crie o arquivo .env.local (veja .env.example) e reinicie com npm run dev; em hospedagem, defina-as antes de rodar npm run build.';
   }
   if (chaveSecreta(chave)) {
     return 'A chave configurada é SECRETA (service_role). Remova-a do frontend imediatamente e use a chave publicável.';
