@@ -1,0 +1,28 @@
+:root{--azul:#0f2742;--grafite:#2b3340;--laranja:#f28c28;--cinza:#eef0f3;--borda:#d5d9e0;--cor:#f28c28}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif;background:var(--cinza);color:var(--grafite);display:flex;min-height:100vh}
+#menu{width:230px;background:var(--azul);color:#fff;flex-shrink:0;padding:16px 0}
+.marca{padding:0 20px 18px;border-bottom:1px solid #ffffff22}.marca b{display:block;font-size:17px}.marca small{color:var(--cor)}
+#nav a{display:block;padding:11px 20px;color:#cfd8e6;cursor:pointer}
+#nav a:hover{background:#ffffff12}#nav a.ativo{background:#ffffff1f;color:#fff;border-left:4px solid var(--cor);padding-left:16px}
+#conteudo{flex:1;min-width:0}header{background:#fff;border-bottom:1px solid var(--borda);padding:14px 24px;display:flex;gap:12px;align-items:center}
+h1{font-size:20px;margin:0}#btnMenu{display:none;background:none;color:var(--azul);font-size:22px;padding:0 6px}
+main{padding:24px;max-width:960px}
+.card{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:20px;margin-bottom:18px}
+.card h2{margin:0 0 12px;font-size:16px}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+input,textarea,select{width:100%;padding:9px 10px;border:1px solid var(--borda);border-radius:6px;font:inherit;background:#fff}
+input:focus,textarea:focus,button:focus-visible,#nav a:focus-visible{outline:2px solid var(--cor);outline-offset:1px}
+input[type=color]{padding:2px;height:38px}
+button{background:var(--cor);color:#1b1206;border:0;border-radius:6px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer}
+button.sec{background:#fff;border:1px solid var(--borda);color:var(--grafite)}
+.acoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.aviso{background:#fff4e5;border:1px solid #f0c27a;border-radius:6px;padding:10px 12px;margin-bottom:14px}
+.aviso.ok{background:#e8f5ec;border-color:#9ccfab}
+#toasts{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:20}
+.toast{background:var(--azul);color:#fff;padding:10px 16px;border-radius:6px;box-shadow:0 4px 14px #0003}.toast.erro{background:#a32525}
+#modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:30}#modal[hidden]{display:none}
+.caixa{background:#fff;border-radius:8px;padding:22px;max-width:420px;width:90%}
+.logo-prev{max-height:60px;display:block;margin-top:8px}
+@media(max-width:760px){#menu{position:fixed;inset:0 auto 0 0;transform:translateX(-100%);transition:transform .2s;z-index:10}#menu.aberto{transform:none}#btnMenu{display:block}main{padding:14px}}
+@media(prefers-reduced-motion:reduce){#menu{transition:none}}
