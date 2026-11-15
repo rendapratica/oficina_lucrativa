@@ -25,3 +25,9 @@ const UI={
     return`<div class="tabela card" style="padding:0"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${linhas.map(l=>`<tr>${l.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   }
 };
+
+UI.fotos=function(box,fotos){
+  box.innerHTML=`<label for="arqFotos">Fotografias</label><input type="file" id="arqFotos" accept="image/*" multiple><div class="fotos">${fotos.map((f,i)=>`<div><img src="${f.data}" alt="Foto ${i+1}"><button type="button" class="risco" data-i="${i}" aria-label="Remover foto">×</button></div>`).join('')}</div>`;
+  box.querySelector('#arqFotos').onchange=async ev=>{for(const a of ev.target.files){try{fotos.push({data:await Config.comprimirImagem(a,1000,.7)})}catch(er){App.toast(er.message,true)}}UI.fotos(box,fotos)};
+  box.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{fotos.splice(+b.dataset.i,1);UI.fotos(box,fotos)});
+};

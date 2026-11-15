@@ -3,6 +3,7 @@ const App={
     {id:'inicio',nome:'Início',render:el=>App.inicio(el)},
     {id:'clientes',nome:'Clientes',render:el=>Clientes.render(el)},
     {id:'equipamentos',nome:'Equipamentos',render:el=>Equipamentos.render(el)},
+    {id:'ordens',nome:'Ordens de serviço',render:el=>Ordens.render(el)},
     {id:'config',nome:'Configurações',render:el=>Config.render(el)},
     {id:'backup',nome:'Backup e restauração',render:el=>App.backup(el)}
   ],
