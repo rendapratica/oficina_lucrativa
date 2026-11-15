@@ -67,7 +67,7 @@ const Documentos={
   },
   async compartilhar(r){
     const file=new File([r.doc.output('blob')],r.nome,{type:'application/pdf'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:r.texto});return}catch(e){if(e.name==='AbortError')return}}
+    if(navigator.maxTouchPoints>1&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:r.texto});return}catch(e){if(e.name==='AbortError')return}}
     r.doc.save(r.nome);const n=(r.fone||'').replace(/\D/g,'');
     window.open('https://wa.me/'+(n.length>=10&&n.length<=11?'55'+n:n)+'?text='+encodeURIComponent(r.texto+' (O PDF foi baixado: anexe o arquivo na conversa.)'),'_blank');
   },
