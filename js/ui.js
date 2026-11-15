@@ -9,7 +9,7 @@ const UI={
     const campo=c=>{const id='f_'+c.k,val=h(v[c.k]);let i;
       if(c.t==='select')i=`<select id="${id}">${c.opts.map(([a,b])=>`<option value="${h(a)}"${a===v[c.k]?' selected':''}>${h(b)}</option>`).join('')}</select>`;
       else if(c.t==='textarea')i=`<textarea id="${id}" rows="2">${val}</textarea>`;
-      else i=`<input id="${id}" value="${val}"${c.list?` list="${id}_l"`:''}${c.type?` type="${c.type}"`:''}>`+(c.list?`<datalist id="${id}_l">${c.list.map(x=>`<option value="${h(x)}">`).join('')}</datalist>`:'');
+      else i=`<input id="${id}" value="${val}"${c.list?` list="${id}_l"`:''}${c.type?` type="${c.type}"`:''}${c.type==='number'?' step="any" min="0"':''}>`+(c.list?`<datalist id="${id}_l">${c.list.map(x=>`<option value="${h(x)}">`).join('')}</datalist>`:'');
       return`<div${c.wide?' class="larga"':''}><label for="${id}">${h(c.l)}${c.req?' *':''}</label>${i}</div>`};
     const d=this.abrir(`<form><h2>${h(titulo)}</h2><div class="grade">${campos.map(campo).join('')}</div><div id="extra"></div><div class="acoes"><button type="submit">Salvar</button><button type="button" class="sec" data-x>Cancelar</button></div></form>`);
     d.querySelector('[data-x]').onclick=()=>this.fechar();

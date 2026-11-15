@@ -5,6 +5,10 @@ const App={
     {id:'equipamentos',nome:'Equipamentos',render:el=>Equipamentos.render(el)},
     {id:'ordens',nome:'Ordens de serviço',render:el=>Ordens.render(el)},
     {id:'orcamentos',nome:'Orçamentos',render:el=>Orcamentos.render(el)},
+    {id:'estoque',nome:'Estoque',render:el=>Estoque.render(el)},
+    {id:'financeiro',nome:'Financeiro',render:el=>Financeiro.render(el)},
+    {id:'garantias',nome:'Garantias',render:el=>Garantias.render(el)},
+    {id:'agenda',nome:'Agenda',render:el=>Agenda.render(el)},
     {id:'config',nome:'Configurações',render:el=>Config.render(el)},
     {id:'backup',nome:'Backup e restauração',render:el=>App.backup(el)}
   ],
@@ -46,7 +50,7 @@ const App={
         await Backup.restaurar(b);await Config.aplicarCor();this.toast('Backup restaurado.');this.ir('backup');
       }catch(x){this.toast(x.message,true)}
     };
-    const nomes={clientes:'Clientes',equipamentos:'Equipamentos',ordens:'Ordens de serviço',orcamentos:'Orçamentos',estoque:'Estoque',receitas:'Receitas',despesas:'Despesas',pagamentos:'Pagamentos',garantias:'Garantias',agendamentos:'Agendamentos',historico:'Histórico'};
+    const nomes={clientes:'Clientes',componentes:'Componentes',estoque:'Movimentos de estoque',equipamentos:'Equipamentos',ordens:'Ordens de serviço',orcamentos:'Orçamentos',estoque:'Estoque',receitas:'Receitas',despesas:'Despesas',pagamentos:'Pagamentos',garantias:'Garantias',agendamentos:'Agendamentos',historico:'Histórico'};
     for(const[k,v]of Object.entries(nomes)){const b=document.createElement('button');b.className='sec';b.textContent=v;
       b.onclick=()=>Backup.csv(k).catch(x=>this.toast(x.message,true));el.querySelector('#csvs').appendChild(b)}
   },

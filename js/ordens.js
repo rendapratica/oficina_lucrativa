@@ -41,10 +41,10 @@ const Ordens={
   async mudarStatus(o,novo){
     if(o.status===novo)return;
     (o.hist=o.hist||[]).push({em:new Date().toISOString(),texto:`Status: ${o.status} → ${novo}`});o.status=novo;
-    await DB.salvar('ordens',o);await DB.registrarHistorico('status da OS',`${o.numero}: ${novo}`);
+    await DB.salvar('ordens',o);if(novo==='Entregue')await Garantias.criarPara(o);await DB.registrarHistorico('status da OS',`${o.numero}: ${novo}`);
   },
   async editar(o,depois){
-    const clientes=(await DB.todos('clientes')).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')),todosEq=await DB.todos('equipamentos');
+    const comps=await DB.todos('componentes'),clientes=(await DB.todos('clientes')).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')),todosEq=await DB.todos('equipamentos');
     if(!clientes.length){App.toast('Cadastre um cliente e um equipamento antes de abrir uma OS.',true);return}
     const clienteIni=o.clienteId||clientes[0].id,opcoesEq=cid=>{const l=todosEq.filter(e=>e.clienteId===cid);return l.length?l.map(e=>[e.id,Equipamentos.nome(e)]):[['','Este cliente não tem equipamentos']]};
     const original=o.fotos||[];let fotos=[];for(const id of original){const i=await DB.obter('imagens',id);if(i)fotos.push(i)}
@@ -56,24 +56,25 @@ const Ordens={
       {k:'maoObra',l:'Mão de obra (R$)',type:'number'},{k:'desconto',l:'Desconto (R$)',type:'number'}];
     const v={status:'Recebido',entrada:this.hoje(),maoObra:'',desconto:'',...o,clienteId:clienteIni};
     UI.form(o.id?'Editar '+o.numero:'Nova ordem de serviço',campos,v,async r=>{
-      const ps=[...document.querySelectorAll('#pecas .peca')].map(d=>{const i=d.querySelectorAll('input');return{nome:i[0].value.trim(),qtd:+i[1].value,valor:+i[2].value}}).filter(p=>p.nome);
+      const ps=[...document.querySelectorAll('#pecas .peca')].map(d=>{const i=d.querySelectorAll('input');const nm=i[0].value.trim(),cp=comps.find(c=>UI.norm(c.nome)===UI.norm(nm));return{nome:nm,qtd:+i[1].value,valor:+i[2].value,componenteId:cp?cp.id:''}}).filter(p=>p.nome);
       if(ps.some(p=>!(p.qtd>0)||p.valor<0))throw new Error('Peças: informe quantidade maior que zero e valor válido.');
       if(r.prazo&&r.prazo<r.entrada)throw new Error('O prazo não pode ser anterior à data de entrada.');
       const mao=+r.maoObra||0,desc=+r.desconto||0;if(mao<0||desc<0)throw new Error('Valores não podem ser negativos.');
       const t=this.total(ps,mao,desc);if(desc>t.bruto)throw new Error('O desconto não pode ser maior que o valor bruto.');
+      await Estoque.validarOS(ps,o.pecas||[]);
       const ids=[];for(const f of fotos){if(!f.id)await DB.salvar('imagens',f);ids.push(f.id)}
       for(const id of original)if(!ids.includes(id))await DB.remover('imagens',id);
       const novo=!o.id,reg={...o,...r,maoObra:mao,desconto:desc,pecas:ps,fotos:ids,total:t.total,hist:o.hist||[]};
       if(novo){reg.numero=await this.proximoNumero();reg.hist.push({em:new Date().toISOString(),texto:'OS criada com status '+r.status})}
       else if(o.status!==r.status)reg.hist.push({em:new Date().toISOString(),texto:`Status: ${o.status} → ${r.status}`});
-      await DB.salvar('ordens',reg);await DB.registrarHistorico(novo?'OS criada':'OS editada',reg.numero);App.toast('OS salva: '+reg.numero);depois();
+      await DB.salvar('ordens',reg);await Estoque.aplicarOS(reg,o.pecas||[]);if(reg.status==='Entregue')await Garantias.criarPara(reg);await DB.registrarHistorico(novo?'OS criada':'OS editada',reg.numero);App.toast('OS salva: '+reg.numero);depois();
     },x=>{
-      x.innerHTML=`<label>Peças utilizadas</label><div id="pecas"></div><button type="button" class="sec peq" id="addPeca" style="margin-top:8px">+ Adicionar peça</button><div class="total-os" id="totalOs"></div><div id="fotosBox" style="margin-top:12px"></div>`;
+      x.innerHTML=`<label>Peças utilizadas</label><div id="pecas"></div><button type="button" class="sec peq" id="addPeca" style="margin-top:8px">+ Adicionar peça</button><datalist id="dlPecas">${comps.map(c=>`<option value="${UI.h(c.nome)}">`).join('')}</datalist><div class="total-os" id="totalOs"></div><div id="fotosBox" style="margin-top:12px"></div>`;
       const calc=()=>{const ps=[...x.querySelectorAll('.peca')].map(d=>{const i=d.querySelectorAll('input');return{qtd:+i[1].value||0,valor:+i[2].value||0}});
         x.querySelector('#totalOs').textContent='Total: '+this.R(this.total(ps,document.getElementById('f_maoObra').value,document.getElementById('f_desconto').value).total)};
       const linha=p=>{const d=document.createElement('div');d.className='peca';
-        d.innerHTML=`<input placeholder="Peça" value="${UI.h(p.nome)}"><input type="number" min="0" step="1" value="${p.qtd}" aria-label="Quantidade"><input type="number" min="0" step="0.01" value="${p.valor}" aria-label="Valor unitário"><button type="button" class="sec peq" aria-label="Remover peça">×</button>`;
-        d.querySelector('button').onclick=()=>{d.remove();calc()};d.oninput=calc;x.querySelector('#pecas').appendChild(d)};
+        d.innerHTML=`<input placeholder="Peça (do estoque ou livre)" list="dlPecas" value="${UI.h(p.nome)}"><input type="number" min="0" step="1" value="${p.qtd}" aria-label="Quantidade"><input type="number" min="0" step="0.01" value="${p.valor}" aria-label="Valor unitário"><button type="button" class="sec peq" aria-label="Remover peça">×</button>`;
+        d.querySelector('button').onclick=()=>{d.remove();calc()};d.oninput=e=>{if(e.target===d.firstChild){const cp=comps.find(c=>UI.norm(c.nome)===UI.norm(e.target.value)),v=d.querySelectorAll('input')[2];if(cp&&!+v.value)v.value=cp.preco||cp.custo||0}calc()};x.querySelector('#pecas').appendChild(d)};
       pecas.forEach(linha);x.querySelector('#addPeca').onclick=()=>{linha({nome:'',qtd:1,valor:0});calc()};
       ['f_maoObra','f_desconto'].forEach(i=>document.getElementById(i).oninput=calc);calc();UI.fotos(x.querySelector('#fotosBox'),fotos);
       const sc=document.getElementById('f_clienteId'),se=document.getElementById('f_equipamentoId');
@@ -86,6 +87,9 @@ const Ordens={
   async excluir(o,depois){
     if(!await App.confirmar(`Excluir a ${o.numero} e suas fotos? Esta ação não pode ser desfeita.`))return;
     for(const id of o.fotos||[])await DB.remover('imagens',id);
+    await Estoque.estornarOS(o);
+    for(const g of(await DB.todos('garantias')).filter(g=>g.ordemId===o.id))await DB.remover('garantias',g.id);
+    for(const g of(await DB.todos('pagamentos')).filter(g=>g.ordemId===o.id))await DB.remover('pagamentos',g.id);
     await DB.remover('ordens',o.id);await DB.registrarHistorico('OS excluída',o.numero);App.toast('OS excluída.');depois();
   }
 };
