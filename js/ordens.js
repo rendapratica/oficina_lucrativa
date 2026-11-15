@@ -20,7 +20,7 @@ const Ordens={
         return[`<b>${UI.h(o.numero)}</b><br><small>${new Date(o.entrada+'T12:00').toLocaleDateString('pt-BR')}</small>`,`${UI.h(cl[o.clienteId]||'—')}<br><small>${UI.h(eq[o.equipamentoId]||'')}</small>`,
           `<select data-st data-id="${o.id}" aria-label="Status">${this.STATUS.map(s=>`<option${s===o.status?' selected':''}>${s}</option>`).join('')}</select>`,
           o.prazo?`<span class="${atrasada?'atraso':''}">${new Date(o.prazo+'T12:00').toLocaleDateString('pt-BR')}${atrasada?' (atrasada)':''}</span>`:'—',this.R(o.total),
-          `<div class="acoes"><button class="sec peq" data-a="ed" data-id="${o.id}">Editar</button><button class="sec peq" data-a="hi" data-id="${o.id}">Histórico</button><button class="peq risco" data-a="ex" data-id="${o.id}">Excluir</button></div>`]}),
+          `<div class="acoes"><button class="sec peq" data-a="ed" data-id="${o.id}">Editar</button><button class="sec peq" data-a="doc" data-id="${o.id}">Documentos</button><button class="sec peq" data-a="hi" data-id="${o.id}">Histórico</button><button class="peq risco" data-a="ex" data-id="${o.id}">Excluir</button></div>`]}),
         todos.length?'Nenhuma OS encontrada.':'Nenhuma ordem de serviço ainda. Clique em "Nova OS".');
     };
     busca.oninput=st.onchange=desenhar;
@@ -33,6 +33,7 @@ const Ordens={
       const b=e.target.closest('button');if(!b)return;const o=await DB.obter('ordens',b.dataset.id);if(!o)return;
       if(b.dataset.a==='ed')this.editar(o,desenhar);
       if(b.dataset.a==='hi')UI.info('Histórico — '+o.numero,UI.tabela(['Data','Alteração'],[...(o.hist||[])].reverse().map(h=>[new Date(h.em).toLocaleString('pt-BR'),UI.h(h.texto)]),'Sem registros.'));
+      if(b.dataset.a==='doc')Documentos.menuOS(o);
       if(b.dataset.a==='ex')this.excluir(o,desenhar);
     };
     desenhar();
