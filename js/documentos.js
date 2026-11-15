@@ -4,13 +4,13 @@ const Documentos={
   data(d){return d?new Date(d.length>10?d:d+'T12:00').toLocaleDateString('pt-BR'):'—'},
   img(src){return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src})},
   async novo(titulo,numero){
-    const cfg=await Config.obter(),doc=new(this.lib())({unit:'mm',format:'a4'}),c={doc,cfg,y:52,M:15,W:210,H:297},cor=this.rgb(cfg.corPrincipal);
-    doc.setFillColor(15,39,66);doc.rect(0,0,210,30,'F');doc.setFillColor(...cor);doc.rect(0,30,210,1.5,'F');
+    const cfg=await Config.obter(),doc=new(this.lib())({unit:'mm',format:'a4'}),c={doc,cfg,y:52,M:15,W:210,H:297},cor=this.rgb(cfg.corDestaque||cfg.corPrincipal),menu=this.rgb(cfg.corPrincipal||'#0f2742'),txt=this.rgb(Config.contraste(cfg.corPrincipal||'#0f2742'));
+    doc.setFillColor(...menu);doc.rect(0,0,210,30,'F');doc.setFillColor(...cor);doc.rect(0,30,210,1.5,'F');
     let x=15;
     if(cfg.logo){const im=await this.img(cfg.logo);if(im){const k=Math.min(20/im.height,40/im.width),w=im.width*k,h=im.height*k;
       doc.setFillColor(255,255,255);doc.roundedRect(15,4,w+4,h+4,2,2,'F');
       try{doc.addImage(cfg.logo,cfg.logo.startsWith('data:image/png')?'PNG':'JPEG',17,6,w,h);x=15+w+10}catch(e){}}}
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(cfg.nomeFantasia||'Oficina',x,12);
+    doc.setTextColor(...txt);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text(cfg.nomeFantasia||'Oficina',x,12);
     doc.setFont('helvetica','normal');doc.setFontSize(8.5);
     doc.text([cfg.razaoSocial,[cfg.documento,cfg.telefone||cfg.whatsapp].filter(Boolean).join(' - '),[cfg.email,cfg.endereco].filter(Boolean).join(' - ')].filter(Boolean).map(t=>doc.splitTextToSize(t,150)[0]),x,17);
     doc.setTextColor(20,30,45);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(titulo.toUpperCase(),15,42);

@@ -51,6 +51,8 @@ const App={
       b.onclick=()=>Backup.csv(k).catch(x=>this.toast(x.message,true));el.querySelector('#csvs').appendChild(b)}
   },
   async iniciar(){
+    const btn=document.getElementById('btnTema'),rot=()=>{btn.textContent=document.documentElement.dataset.tema==='escuro'?'☀ Tema claro':'☾ Tema escuro'};
+    btn.onclick=()=>{const n=document.documentElement.dataset.tema==='escuro'?'claro':'escuro';document.documentElement.dataset.tema=n;try{localStorage.setItem('ol_tema',n)}catch(e){}rot()};rot();
     try{await DB.abrir();if(navigator.storage?.persist)navigator.storage.persist()}
     catch(e){document.getElementById('view').innerHTML='<div class="aviso">Não foi possível abrir o armazenamento local. Verifique se o navegador permite IndexedDB (não use aba anônima).</div>';return}
     await Config.aplicarCor();
