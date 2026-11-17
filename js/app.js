@@ -1,6 +1,6 @@
 const App={
   telas:[
-    {id:'inicio',nome:'Início',render:el=>App.inicio(el)},
+    {id:'inicio',nome:'Início',render:el=>Dashboard.render(el)},
     {id:'clientes',nome:'Clientes',render:el=>Clientes.render(el)},
     {id:'equipamentos',nome:'Equipamentos',render:el=>Equipamentos.render(el)},
     {id:'ordens',nome:'Ordens de serviço',render:el=>Ordens.render(el)},
@@ -9,8 +9,10 @@ const App={
     {id:'financeiro',nome:'Financeiro',render:el=>Financeiro.render(el)},
     {id:'garantias',nome:'Garantias',render:el=>Garantias.render(el)},
     {id:'agenda',nome:'Agenda',render:el=>Agenda.render(el)},
+    {id:'relatorios',nome:'Relatórios',render:el=>Dashboard.relatorios(el)},
     {id:'config',nome:'Configurações',render:el=>Config.render(el)},
-    {id:'backup',nome:'Backup e restauração',render:el=>App.backup(el)}
+    {id:'backup',nome:'Backup e restauração',render:el=>App.backup(el)},
+    {id:'licenca',nome:'Licença e instalação',render:el=>Licenca.render(el)}
   ],
   toast(msg,erro){const t=document.createElement('div');t.className='toast'+(erro?' erro':'');t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),3500)},
   confirmar(msg){return new Promise(ok=>{const m=document.getElementById('modal');document.getElementById('modalTexto').textContent=msg;m.hidden=false;

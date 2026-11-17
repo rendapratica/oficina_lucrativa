@@ -42,3 +42,7 @@ dialog{background:var(--sup);color:var(--texto);border:0;border-radius:8px;paddi
 :root[data-tema=escuro] .aviso{background:#3a2d12;border-color:#7a5c1e}:root[data-tema=escuro] .aviso.ok{background:#16301f;border-color:#2f6b45}
 :root[data-tema=escuro] button.risco,:root[data-tema=escuro] .atraso{color:#ff8a8a;border-color:#a05050}.vazio{color:var(--muted)}
 #btnTema{margin-left:auto}
+
+.graf{min-height:120px}.graf canvas{max-height:260px}.linha{display:grid;grid-template-columns:100px 1fr 150px;gap:8px;align-items:center;margin:6px 0;font-size:13px}
+.linha .fill{height:10px;border-radius:4px;margin:2px 0}.linha span:last-child{text-align:right}.metrica small{color:var(--muted)}.metrica .total-os{margin:2px 0 0}
+@media(max-width:760px){.linha{grid-template-columns:70px 1fr 110px}}
